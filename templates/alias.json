@@ -1,0 +1,15 @@
+{
+    "endpoint": "/api/firewall/alias/addItem",
+    "method": "POST",
+    "payload": {
+    "alias": {
+        "enabled": "1",
+        "name": "{{ name }}",
+        "type": "host",
+        "proto": "",
+        "counters": "0",
+        "description": "Imported from SRX320: {{ original_junos_name }}",
+        "content": "{{ ip_address }}"
+    }
+    }
+}

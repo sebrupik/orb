@@ -1,0 +1,12 @@
+{
+    "endpoint": "/api/interfaces/vlan_settings/addItem",
+    "method": "POST",
+    "payload": {
+        "vlan": {
+            "if": "{{ parent_interface }}",
+            "tag": "{{ vlan_tag }}",
+            "pcp": "0",
+            "descr": "VLAN {{ vlan_tag }} (SRX IRB {{ unit }})"
+        }
+    }
+}

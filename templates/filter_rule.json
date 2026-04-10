@@ -1,0 +1,20 @@
+{
+    "endpoint": "/api/firewall/filter/addRule",
+    "method": "POST",
+    "payload": {
+        "rule": {
+            "enabled": "1",
+            "sequence": "1",
+            "action": "pass",
+            "quick": "1",
+            "interface": "{{ mapped_interface }}",
+            "direction": "in",
+            "ipprotocol": "inet",
+            "protocol": "{{ protocol }}",
+            "source_net": "{{ source_uuid }}",
+            "destination_net": "{{ destination_uuid }}",
+            "destination_port": "{{ port }}",
+            "description": "SRX Migration: {{ junos_policy_name }}"
+        }
+    }
+}

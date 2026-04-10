@@ -1,0 +1,15 @@
+{
+    "endpoint": "/api/dhcpv4/settings/set",
+    "method": "POST",
+    "payload": {
+        "dhcp": {
+            "interface": "{{ interface_name }}",
+            "range_from": "{{ range_low }}",
+            "range_to": "{{ range_high }}",
+            "gateway": "{{ gateway_ip }}",
+            "domain": "{{ domain_name }}",
+            "dns1": "8.8.8.8",
+            "default_lease_time": "7200"
+        }
+    }
+}
