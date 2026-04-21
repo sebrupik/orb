@@ -1,6 +1,12 @@
+"""
+OPNsense Rule Bridge
+"""
+
 import json
 import logging
+import xmltodict
 from ncclient import manager
+from ncclient.xml_ import to_ele
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -24,30 +30,100 @@ def junos_collector(devicename: str, username: str, password: str) -> Dict[str, 
     # In a real implementation, this would use ncclient or similar to connect to the device,
     # execute the appropriate RPC to retrieve the address book, and parse it into a dict.
     # raise NotImplementedError("Junos collector not implemented yet")
+
+    print("pre manager.connect")  # For debugging purposes
+
     with manager.connect(host=devicename, username=username, password=password, 
-                         port=830, hostkey_verify=False,
+                         port=22, hostkey_verify=False,
                          device_params={'name':'junos'}) as m:
+        print(m.server_capabilities)  # For debugging purposes
+
+        interfaces = junos_get_interfaces(m)
+        print("Collected interfaces:", interfaces)
+
         # Example RPC to get address book (this is just a placeholder and may need adjustments)
-        rpc = """
+        zones = junos_get_security_zones(m)
+        print("Collected zones:", zones)
+
+        address_book = junos_get_address_books(m, zone_name="example-zone")  # Replace with actual zone name
+        print("Collected address book:", address_book)
+    
+    
+def junos_get_interfaces(m: manager.Manager) -> Dict[str, Any]:
+    # Placeholder for function to get interfaces from Junos
+    rpc = """<get-config>
+    <source><running/></source>
+    <filter type="subtree">
+        <configuration>
+            <interfaces/>
+        </configuration>
+    </filter>
+</get-config>"""
+    
+    response = m.dispatch(to_ele(rpc))
+    # Parse response into dict format expected by JunosAddressBook.model_validate
+    # This parsing logic will depend on the actual structure of the response XML
+    # For now, we'll return an empty dict as a placeholder
+    parsed = xmltodict.parse(response.data_xml)
+    print(json.dumps(parsed, indent=2))  # See the real structure
+
+    # raise NotImplementedError("Junos interfaces collector not implemented yet")
+
+
+def junos_get_security_zones(m: manager.Manager) -> Dict[str, Any]:
+    # Placeholder for function to get security zones from Junos
+    rpc = """<get-config>
+    <source><running/></source>
+    <filter type="subtree">
+        <configuration>
+            <security>
+                <zones/>
+            </security>
+        </configuration>
+    </filter>
+</get-config>"""
+    
+    response = m.dispatch(to_ele(rpc))
+    # Parse response into dict format expected by JunosAddressBook.model_validate
+    # This parsing logic will depend on the actual structure of the response XML
+    # For now, we'll return an empty dict as a placeholder
+    parsed = xmltodict.parse(response.data_xml)
+    print(json.dumps(parsed, indent=2))  # See the real structure
+
+    # raise NotImplementedError("Junos security zones collector not implemented yet")
+
+
+def junos_get_address_books(m: manager.Manager, zone_name: str) -> Dict[str, Any]:
+    # itterate through security zones and collect address books for each zone
+    #  take the zone name and use that and use in the subtree filter to collect
+    rpc = """
 <get-config>
-  <source>running</source>
+  <source><running/></source>
   <filter type="subtree">
     <configuration>
       <security>
-        <address-book>
-          <name>default</name>
-        </address-book>
+        <address-book/>
       </security>
     </configuration>
   </filter>
 </get-config>
 """
-        response = m.dispatch(rpc)
-        # Parse response into dict format expected by JunosAddressBook.model_validate
-        # This parsing logic will depend on the actual structure of the response XML
-        # For now, we'll return an empty dict as a placeholder
-        return {}  # Replace with actual parsed data
-    
+    response = m.dispatch(to_ele(rpc))
+    # Parse response into dict format expected by JunosAddressBook.model_validate
+    # This parsing logic will depend on the actual structure of the response XML
+    # For now, we'll return an empty dict as a placeholder
+    parsed = xmltodict.parse(response.data_xml)
+    print(json.dumps(parsed, indent=2))  # See the real structure
+
+    # Then, access keys carefully:
+    try:
+        all_address_books = parsed["rpc-reply"]["data"]["configuration"]["security"]
+    except KeyError as e:
+        logger.error(f"Missing key in NETCONF response: {e}")
+        all_address_books = None
+
+    return all_address_books
+
 
 
 
@@ -113,6 +189,7 @@ def main():
 
     # depending on source vendor, collect data (eg: via API, etc)
     # if Juniper use netconf to collect data
+    pass
 
 
 def __main__():
