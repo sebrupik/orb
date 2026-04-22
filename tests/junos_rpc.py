@@ -1,0 +1,132 @@
+show_configuration_security_address_book = """<rpc-reply xmlns:junos="http://xml.juniper.net/junos/23.4R2-S5.5/junos">
+    <data>
+    <configuration junos:commit-seconds="1776634460" junos:commit-localtime="2026-04-19 21:34:20 UTC" junos:commit-user="cs7_admin">
+            <security>
+                <address-book>
+                    <name>global</name>
+                    <address>
+                        <name>server002.cs7networks.co.uk</name>
+                        <ip-prefix>10.83.20.11/32</ip-prefix>
+                    </address>
+                    <address>
+                        <name>server003.cs7networks.co.uk</name>
+                        <ip-prefix>10.83.21.11/32</ip-prefix>
+                    </address>          
+                    <address>
+                        <name>WIRELESS-01_subnet</name>
+                        <ip-prefix>192.168.1.0/24</ip-prefix>
+                    </address>
+                    <address>
+                        <name>filepile.cs7networks.co.uk</name>
+                        <ip-prefix>10.83.20.64/32</ip-prefix>
+                    </address>
+                    <address>
+                        <name>yacy.cs7networks.co.uk</name>
+                        <ip-prefix>10.83.21.128/32</ip-prefix>
+                    </address>
+                    <address>           
+                        <name>server002.cs7networks.co.uk-v6</name>
+                        <ip-prefix>2001:470:186d:20::11/128</ip-prefix>
+                    </address>
+                </address-book>
+            </security>
+    </configuration>
+    </data>
+    <cli>
+        <banner></banner>
+    </cli>
+</rpc-reply>"""
+
+show_configuration_securiy_zones = """<rpc-reply xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:junos="http://xml.juniper.net/junos/23.4R2-S5.5/junos">
+<data>
+<configuration xmlns="http://xml.juniper.net/xnm/1.1/xnm" junos:commit-seconds="1776634460" junos:commit-localtime="2026-04-19 21:34:20 UTC" junos:commit-user="cs7_admin">
+    <security>
+        <zones>
+            <security-zone>
+                <name>OUTSIDE</name>
+                <host-inbound-traffic>
+                    <system-services>
+                        <name>ping</name>
+                    </system-services>
+                    <system-services>
+                        <name>ntp</name>
+                    </system-services>
+                    <system-services>
+                        <name>bootp</name>
+                    </system-services>
+                    <system-services>
+                        <name>dhcp</name>
+                    </system-services>
+                    <system-services>
+                        <name>dhcpv6</name>
+                    </system-services>
+                </host-inbound-traffic>
+                <interfaces>
+                    <name>pt-1/0/0.0</name>
+                </interfaces>
+                <interfaces>
+                    <name>pp0.0</name>
+                </interfaces>
+            </security-zone>
+            <security-zone>
+                <name>MGMT</name>
+                <host-inbound-traffic>
+                    <system-services>
+                        <name>all</name>
+                    </system-services>
+                    <protocols>
+                        <name>all</name>
+                    </protocols>
+                </host-inbound-traffic>
+                <interfaces>
+                    <name>irb.2</name>
+                </interfaces>
+            </security-zone>
+            <security-zone>
+                <name>WIRELESS_01</name>
+                <host-inbound-traffic>
+                    <system-services>
+                        <name>all</name>
+                    </system-services>
+                    <protocols>
+                        <name>all</name>
+                    </protocols>
+                </host-inbound-traffic>
+                <interfaces>
+                    <name>irb.30</name>
+                    <host-inbound-traffic>
+                        <system-services>
+                            <name>snmp</name>
+                        </system-services>
+                        <system-services>
+                            <name>dhcp</name>
+                        </system-services>
+                        <system-services>
+                            <name>ssh</name>
+                        </system-services>
+                        <system-services>
+                            <name>ping</name>
+                        </system-services>
+                    </host-inbound-traffic>
+                </interfaces>
+                <interfaces>
+                    <name>irb.3</name>
+                    <host-inbound-traffic>
+                        <system-services>
+                            <name>all</name>
+                        </system-services>
+                        <protocols>
+                            <name>all</name>
+                        </protocols>
+                    </host-inbound-traffic>
+                </interfaces>
+            </security-zone>
+        </zones>
+    </security>
+</configuration>
+</data>
+<cli>
+        <banner></banner>
+    </cli>
+</rpc-reply>
+"""

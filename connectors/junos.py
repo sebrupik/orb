@@ -19,7 +19,6 @@ class JunosConnector:
             print(m.server_capabilities)  # For debugging purposes
             self.collect_configuration(m)
 
-
     def collect_configuration(self, m):
         # Placeholder for logic to collect data from Junos
         self.configuration = {
@@ -107,12 +106,11 @@ class JunosConnector:
 
         # Then, access keys carefully:
         try:
-            all_address_books = parsed["rpc-reply"]["data"]["configuration"]["security"]
+            all_address_books = parsed["rpc-reply"]["data"]["configuration"]["security"]["address-book"]
         except KeyError as e:
-            # logger.error(f"Missing key in NETCONF response: {e}")
             all_address_books = None
 
         # Validate Junos input
-        junos_book = models.junos.JunosAddressBook.model_validate(raw_junos_dict)
+        junos_book = models.junos.JunosAddressBook.model_validate(all_address_books)
 
         return junos_book
