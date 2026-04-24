@@ -7,30 +7,24 @@ show_configuration_security_address_book = """<rpc-reply xmlns:junos="http://xml
                     <address>
                         <name>server002.cs7networks.co.uk</name>
                         <ip-prefix>10.83.20.11/32</ip-prefix>
-                    </address>
-                    <address>
-                        <name>server003.cs7networks.co.uk</name>
-                        <ip-prefix>10.83.21.11/32</ip-prefix>
-                    </address>          
+                    </address>        
                     <address>
                         <name>WIRELESS-01_subnet</name>
                         <ip-prefix>192.168.1.0/24</ip-prefix>
                     </address>
-                    <address>
-                        <name>filepile.cs7networks.co.uk</name>
-                        <ip-prefix>10.83.20.64/32</ip-prefix>
-                    </address>
-                    <address>
-                        <name>yacy.cs7networks.co.uk</name>
-                        <ip-prefix>10.83.21.128/32</ip-prefix>
-                    </address>
                     <address>           
                         <name>server002.cs7networks.co.uk-v6</name>
-                        <ip-prefix>2001:470:186d:20::11/128</ip-prefix>
+                        <ip-prefix>2001:270:6aaa:20::11/128</ip-prefix>
+                    </address>
+                    <address>
+                        <name>firmware.grandstream.com</name>
+                        <dns-name>
+                            <name>firmware.grandstream.net</name>
+                        </dns-name>
                     </address>
                 </address-book>
             </security>
-    </configuration>
+        </configuration>
     </data>
     <cli>
         <banner></banner>
@@ -130,3 +124,27 @@ show_configuration_securiy_zones = """<rpc-reply xmlns="urn:ietf:params:xml:ns:n
     </cli>
 </rpc-reply>
 """
+
+show_configuration_vlans = """<rpc-reply message-id="urn:uuid:b1878def-874b-4743-9153-c12972e786ea">
+  <data>
+    <configuration commit-seconds="1776634460" commit-localtime="2026-04-19 21:34:20 UTC" commit-user="cs7_admin">
+      <vlans>
+        <vlan>
+          <name>IOT_01</name>
+          <vlan-id>31</vlan-id>
+          <l3-interface>irb.31</l3-interface>
+        </vlan>
+        <vlan>
+          <name>MGMT</name>
+          <vlan-id>2</vlan-id>
+          <l3-interface>irb.2</l3-interface>
+        </vlan>
+        <vlan>
+          <name>PROXMOX_NO_INTERNET</name>
+          <vlan-id>15</vlan-id>
+          <l3-interface>irb.15</l3-interface>
+        </vlan>
+      </vlans>
+    </configuration>
+  </data>
+</rpc-reply>"""

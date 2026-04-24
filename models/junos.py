@@ -4,9 +4,14 @@ Pydantic models for parsing the SRX XML
 from pydantic import BaseModel, Field, model_validator
 from typing import List, Optional
 
+
+class JunosDnsName(BaseModel):
+    name: str
+
 class JunosAddress(BaseModel):
     name: str
-    ip_prefix: str = Field(alias="ip-prefix")
+    ip_prefix: Optional[str] = Field(None, alias="ip-prefix")
+    dns_name: Optional[JunosDnsName] = Field(None, alias="dns-name")
 
 class JunosAddressBook(BaseModel):
     name: str
@@ -88,3 +93,12 @@ class JunosSecurityZone(BaseModel):
     host_inbound_traffic: Optional[JunosHostInboundTraffic] = Field(None, alias="host-inbound-traffic")
     interfaces: Optional[List[JunosZoneInterface]] = Field(default_factory=list)
 
+# VLANs
+
+class JunosVlan(BaseModel):
+    name: str
+    vlan_id: int = Field(alias="vlan-id")
+    l3_interface: Optional[str] = Field(None, alias="l3-interface")
+
+class JunosVlans(BaseModel):
+    vlans: List[JunosVlan] = Field(alias="vlan", default_factory=list)

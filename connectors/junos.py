@@ -22,6 +22,8 @@ class JunosConnector:
     def collect_configuration(self, m):
         # Placeholder for logic to collect data from Junos
         self.configuration = {
+            "vlans": self.get_vlans(m),
+            "address_books": self.get_address_books(m),
             "security_zones": self.get_security_zones(m),
             "interfaces": self.get_interfaces(m),
         }
@@ -84,6 +86,30 @@ class JunosConnector:
         # Placeholder for logic to retrieve interfaces from Junos
         pass
 
+    def get_vlans(self, m):
+        rpc = """<get-config>
+    <source><running/></source>
+    <filter type="subtree">
+        <configuration>
+            <vlans/>
+        </configuration>
+    </filter>
+</get-config>"""
+        response = m.dispatch(to_ele(rpc))
+        print(response)
+        parsed = xmltodict.parse(response.data_xml)
+        print(json.dumps(parsed, indent=2))  # See the real structure
+        # return parsed
+        try:
+            raw_vlans = parsed["rpc-reply"]["data"]["configuration"]["vlans"]
+        except KeyError as e:
+            # logger.error(f"Missing key in NETCONF response: {e}")
+            raw_vlans = None
+
+        junos_vlans = models.junos.JunosVlans.model_validate(raw_vlans)
+        
+        return junos_vlans
+
     def get_address_books(self, m):
         rpc = """
 <get-config>
@@ -98,19 +124,15 @@ class JunosConnector:
 </get-config>
 """
         response = m.dispatch(to_ele(rpc))
-        # Parse response into dict format expected by JunosAddressBook.model_validate
-        # This parsing logic will depend on the actual structure of the response XML
-        # For now, we'll return an empty dict as a placeholder
+        print(response)
         parsed = xmltodict.parse(response.data_xml)
         # print(json.dumps(parsed, indent=2))  # See the real structure
 
-        # Then, access keys carefully:
         try:
             all_address_books = parsed["rpc-reply"]["data"]["configuration"]["security"]["address-book"]
         except KeyError as e:
             all_address_books = None
 
-        # Validate Junos input
         junos_book = models.junos.JunosAddressBook.model_validate(all_address_books)
 
         return junos_book

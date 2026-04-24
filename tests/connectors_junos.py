@@ -3,8 +3,10 @@ from unittest.mock import MagicMock, patch
 import xmltodict
 
 from connectors.junos import JunosConnector
-from models.junos import JunosAddressBook, JunosAddress, JunosSecurityZone
-from tests.junos_rpc import show_configuration_security_address_book, show_configuration_securiy_zones
+from models.junos import JunosAddressBook, JunosAddress, JunosSecurityZone, JunosVlans, JunosVlan
+from tests.junos_rpc import (show_configuration_security_address_book,
+                             show_configuration_securiy_zones,
+                             show_configuration_vlans)
 
 
 def make_mock_manager(xml_response: str):
@@ -34,11 +36,9 @@ class TestConnectorsJunos:
             "global",
             [
                 ("server002.cs7networks.co.uk",   "10.83.20.11/32"),
-                ("server003.cs7networks.co.uk",   "10.83.21.11/32"),
                 ("WIRELESS-01_subnet",            "192.168.1.0/24"),
-                ("filepile.cs7networks.co.uk",    "10.83.20.64/32"),
-                ("yacy.cs7networks.co.uk",        "10.83.21.128/32"),
-                ("server002.cs7networks.co.uk-v6","2001:470:186d:20::11/128"),
+                ("server002.cs7networks.co.uk-v6","2001:270:6aaa:20::11/128"),
+                ("firmware.grandstream.com",       None),
             ],
         ),
     ])
@@ -91,3 +91,26 @@ class TestConnectorsJunos:
             assert zone.host_inbound_traffic.system_services == expected["system_services"]
             iface_names = [iface.name for iface in zone.interfaces]
             assert iface_names == expected["interfaces"]
+
+    @pytest.mark.parametrize("xml_input, expected_vlans", [
+        (
+            show_configuration_vlans,
+            [
+                {"name": "IOT_01",              "vlan_id": 31, "l3_interface": "irb.31"},
+                {"name": "MGMT",                "vlan_id": 2,  "l3_interface": "irb.2"},
+                {"name": "PROXMOX_NO_INTERNET", "vlan_id": 15, "l3_interface": "irb.15"},
+            ],
+        ),
+    ])
+    def test_get_vlans(self, connector, xml_input, expected_vlans):
+        mock_m = make_mock_manager(xml_input)
+        result = connector.get_vlans(mock_m)
+
+        assert isinstance(result, JunosVlans)
+        assert len(result.vlans) == len(expected_vlans)
+
+        for vlan, expected in zip(result.vlans, expected_vlans):
+            assert isinstance(vlan, JunosVlan)
+            assert vlan.name == expected["name"]
+            assert vlan.vlan_id == expected["vlan_id"]
+            assert vlan.l3_interface == expected["l3_interface"]
