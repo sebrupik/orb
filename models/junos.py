@@ -17,6 +17,9 @@ class JunosAddressBook(BaseModel):
     name: str
     addresses: List[JunosAddress] = Field(alias="address", default_factory=list)
 
+    def __len__(self):
+        return len(self.addresses)
+
 # DHCP pools
 
 class JunosDhcpAttributes(BaseModel):
@@ -45,6 +48,9 @@ class JunosDhcpFamilyInet(BaseModel):
 class JunosDhcpPool(BaseModel):
     name: str
     family_inet: JunosDhcpFamilyInet = Field(alias="family-inet")
+
+    def __len__(self):
+        return len(self.family_inet.range)
 
 # security zones
 
@@ -93,6 +99,9 @@ class JunosSecurityZone(BaseModel):
     host_inbound_traffic: Optional[JunosHostInboundTraffic] = Field(None, alias="host-inbound-traffic")
     interfaces: Optional[List[JunosZoneInterface]] = Field(default_factory=list)
 
+    def __len__(self):
+        return len(self.interfaces)
+
 # VLANs
 
 class JunosVlan(BaseModel):
@@ -102,3 +111,6 @@ class JunosVlan(BaseModel):
 
 class JunosVlans(BaseModel):
     vlans: List[JunosVlan] = Field(alias="vlan", default_factory=list)
+
+    def __len__(self):
+        return len(self.vlans)

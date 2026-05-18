@@ -27,7 +27,8 @@ class JunosConnector:
             "security_zones": self.get_security_zones(m),
             "interfaces": self.get_interfaces(m),
         }
-        print(self.configuration)  # For debugging purposes
+        # print(self.configuration)  # For debugging purposes
+        print({k: len(v) if v is not None else None for k, v in self.configuration.items()})  # Show counts
 
     def normalise_zone_interfaces(interfaces_raw) -> list:
         """Normalise xmltodict interface output to a list of dicts."""
